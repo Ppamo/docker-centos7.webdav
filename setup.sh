@@ -3,6 +3,14 @@ IMAGENAME=webdav
 IMAGETAG=latest
 IMAGEVERSION=v0.1
 VOLUMEPATH=/opt/webdav
+SERVICEPORT=9000
+
+# check if the assigned port is in use
+FOUND=$(netstat -anp --tcp | grep -Eo ":$SERVICEPORT .+LISTEN")
+if [ -n "$FOUND" ]; then
+	echo "The assigned port ($SERVICEPORT) seems to be in use!"
+	exit -1
+fi
 
 # check if docker is running
 docker info > /dev/null 2>&1
@@ -40,4 +48,4 @@ chown -R apache.apache $VOLUMEPATH
 chcon -Rt svirt_sandbox_file_t $VOLUMEPATH
 
 # run a container from $IMAGENAME image
-docker run -di -P -v $VOLUMEPATH:/var/www/html/webdav "$IMAGENAME:$IMAGETAG"
+docker run -di -p $SERVICEPORT:80 -v $VOLUMEPATH:/var/www/html/webdav "$IMAGENAME:$IMAGETAG"
