@@ -49,3 +49,4 @@ chcon -Rt svirt_sandbox_file_t $VOLUMEPATH
 
 # run a container from $IMAGENAME image
 docker run -di -p $SERVICEPORT:80 -v $VOLUMEPATH:/var/www/html/webdav "$IMAGENAME:$IMAGETAG"
+echo "LISTEN: http://localhost:9000/"
